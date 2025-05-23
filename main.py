@@ -34,13 +34,18 @@ async def webhook(req: Request):
     body = await req.json()
     text = body['events'][0]['message']['text']
 
+    print(text)
     prompt = PromptTemplate.from_template(
         "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email"
     )
-
-    llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
-    chain = prompt | llm
-    result = chain.invoke({"text": text})
-
+    
+    try:
+        llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
+        chain = prompt | llm
+        result = chain.invoke({"text": text})
+        print(result)
+    except Exception as e:
+        print("❌ Hook Error:", e)
+    
     collection.insert_one(result)
     return {"status": "saved", "data": result}
