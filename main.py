@@ -3,13 +3,31 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from pymongo import MongoClient
 import os
-
-app = FastAPI()
+from dotenv import load_dotenv
+load_dotenv()
 
 mongo_uri = os.getenv("MONGODB_URI")
+open_api_key = os.getenv("OPENAI_API_KEY")
 client = MongoClient(mongo_uri)
 db = client.get_database("customerdb")
 collection = db["customers"]
+
+print(mongo_uri)
+print(open_api_key)
+
+try:
+    client.admin.command("ping")
+    print(mongo_uri)
+    print("✅ Connected to MongoDB!")
+    
+except Exception as e:
+    print("❌ MongoDB connection error:", e)
+    
+result = collection.insert_one({"name": "YYLW"})
+print("✅ Inserted ID:", result.inserted_id)
+
+
+app = FastAPI()
 
 @app.post("/webhook")
 async def webhook(req: Request):
