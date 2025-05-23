@@ -41,13 +41,10 @@ async def webhook(req: Request):
         "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email"
     )
     
-    try:
-        llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
-        chain = prompt | llm
-        result = chain.invoke({"text": text})
-        print(result)
-    except Exception as e:
-        print("❌ Hook Error:", e)
+    llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
+    chain = prompt | llm
+    result = chain.invoke({"text": text})
+    print(result)
     
     collection.insert_one(result)
     return {"status": "saved", "data": result}
