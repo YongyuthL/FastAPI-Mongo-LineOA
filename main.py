@@ -3,6 +3,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from pymongo import MongoClient
 import os
+import json
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -44,7 +45,16 @@ async def webhook(req: Request):
     llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
     chain = prompt | llm
     result = chain.invoke({"text": text})
+    print("_________________________________________")
     print(result)
     
-    collection.insert_one(result)
-    return {"status": "saved", "data": result}
+    try:
+        # พยายามแปลง string เป็น dict
+        data = json.loads(result)
+    except Exception as e:
+        return {"status": "error", "message": "Failed to parse response as JSON", "response": response}
+
+    # บันทึกลง MongoDB
+    collection.insert_one(data)
+
+    return {"status": "saved", "data": data}
