@@ -31,6 +31,8 @@ app = FastAPI()
 
 @app.post("/webhook")
 async def webhook(req: Request):
+    print("xxx")
+    print(req)
     body = await req.json()
     text = body['events'][0]['message']['text']
 
