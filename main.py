@@ -50,6 +50,7 @@ async def webhook(req: Request):
         
         return {
             "status": "saved",
+            "inserted_id": str(_result.inserted_id),  # ✅ แปลง ObjectId เป็น string
             "data": data
         }
         
