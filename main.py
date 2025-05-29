@@ -41,7 +41,8 @@ async def webhook(req: Request):
         
         print(result.content)
         # พยายามแปลง string เป็น dict
-        data = json.loads(result)
+        data = json.loads(result.content)
+        print(data)
         # บันทึกลง MongoDB
         print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
         _result = collection.insert_one(data)
