@@ -29,8 +29,8 @@ async def webhook(req: Request):
     body = await req.json()
     text = body['events'][0]['message']['text']
 
-    prompt = PromptTemplate.from_template(
-        "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email"
+    PromptTemplate.from_template(
+        "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email โดยไม่ต้องอธิบายหรือใส่ข้อความอื่นนอกจาก JSON"
     )
     
     llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
