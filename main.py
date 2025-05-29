@@ -52,7 +52,9 @@ async def webhook(req: Request):
         # พยายามแปลง string เป็น dict
         data = json.loads(result)
         # บันทึกลง MongoDB
-        collection.insert_one(data)
+        _result = collection.insert_one(data)
+        print(_result)
+        print("Insert Success")
         return {"status": "saved", "data": data}
         
     except Exception as e:
