@@ -5,6 +5,7 @@ from pymongo import MongoClient
 import os
 import json
 from dotenv import load_dotenv
+import re
 load_dotenv()
 
 mongo_uri = os.getenv("MONGODB_URI")
@@ -29,7 +30,7 @@ async def webhook(req: Request):
     body = await req.json()
     text = body['events'][0]['message']['text']
 
-    PromptTemplate.from_template(
+    prompt = PromptTemplate.from_template(
         "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email โดยไม่ต้องอธิบายหรือใส่ข้อความอื่นนอกจาก JSON"
     )
     
