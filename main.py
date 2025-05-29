@@ -43,10 +43,16 @@ async def webhook(req: Request):
         
         print(result.content)
         # พยายามแปลง string เป็น dict
-        data = json.loads(result.content)
+        match = re.search(r'\{.*\}', result.content, re.DOTALL)
+        print(match)
+        json_only = match.group()
+        print(json_only)
+        data = json.loads(json_only)
         print(data)
         # บันทึกลง MongoDB
         print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
+        result = collection.insert_one({"name": "ปกรณ์xxx","phone": "080-000-0000","email": "pakorn@email.com"})
+        print(result)
         _result = collection.insert_one(data)
         print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         print(_result)
