@@ -40,24 +40,19 @@ async def webhook(req: Request):
     
     try:
         
-        
-        print(result.content)
         # พยายามแปลง string เป็น dict
         match = re.search(r'\{.*\}', result.content, re.DOTALL)
-        print(match)
         json_only = match.group()
-        print(json_only)
         data = json.loads(json_only)
-        print(data)
+        
         # บันทึกลง MongoDB
-        print("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-        result = collection.insert_one({"name": "ปกรณ์xxx","phone": "080-000-0000","email": "pakorn@email.com"})
-        print(result)
         _result = collection.insert_one(data)
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         print(_result)
         
-        return {"status": "saved", "data": data}
+        return {
+            "status": "saved",
+            "data": data
+        }
         
     except Exception as e:
         return {"status": "error", "message": "Failed to parse response as JSON", "response": result}
