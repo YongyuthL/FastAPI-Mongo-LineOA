@@ -40,6 +40,7 @@ async def webhook(req: Request):
     
     try:
         
+        
         print(result.content)
         # พยายามแปลง string เป็น dict
         data = json.loads(result.content)
