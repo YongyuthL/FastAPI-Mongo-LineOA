@@ -45,14 +45,15 @@ async def webhook(req: Request):
     llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
     chain = prompt | llm
     result = chain.invoke({"text": text})
-    print("_________________________________________")
-    print(result)
     
     try:
         # พยายามแปลง string เป็น dict
         data = json.loads(result)
         # บันทึกลง MongoDB
+        print(data)
+        print("____________________________________________")
         _result = collection.insert_one(data)
+        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
         print(_result)
         print("Insert Success")
         return {"status": "saved", "data": data}
