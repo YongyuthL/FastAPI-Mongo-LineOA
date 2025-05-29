@@ -47,7 +47,6 @@ async def webhook(req: Request):
         
         # บันทึกลง MongoDB
         _result = collection.insert_one(data)
-        print(_result)
         
         return {
             "status": "saved",
