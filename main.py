@@ -59,7 +59,14 @@ async def reply_to_line(reply_token: str, message: str):
     async with httpx.AsyncClient() as client:
         await client.post("https://api.line.me/v2/bot/message/reply", json=payload, headers=headers)
 
+def is_valid_name(name: str) -> bool:
+    return name and name.strip() not in ["", "-", "ไม่ระบุ", "ไม่ทราบ"]
 
+def is_valid_phone(phone: str) -> bool:
+    return bool(re.fullmatch(r"0\d{8,9}", phone.strip()))
+
+def is_valid_email(email: str) -> bool:
+    return bool(re.fullmatch(r"[^@]+@[^@]+\.[^@]+", email.strip()))
 
 @app.get("/download/{filename}")
 async def download_excel(filename: str):
@@ -85,13 +92,13 @@ async def webhook(req: Request):
             reply_token = event["replyToken"]
 
             if "บันทึกข้อมูลค้า" in text:
-                await reply_to_line(reply_token, "สามารถบันทึกข้อมูลค้าโดยการพิมพ์ ชื่อ-สกุล เบอร์โทร E-mail ตัวอย่าง มานะ ใจดี 0899999999 mana_jaidee@dynastyceramic.com")
+                await reply_to_line(reply_token, "สามารถบันทึกข้อมูลค้าโดยการพิมพ์ ชื่อ-สกุล เบอร์โทร E-mail ตัวอย่าง มานะ ใจดี 0899999999 mana_jaidee@dynastyceramic.com 😊")
                 
             if "แก้ไขข้อมูล" in text:
-                await reply_to_line(reply_token, "ขออภัยในความไม่สะดวก ระบบกำลังอยู่ระหว่างการพัฒนา อดใจรอซักนิดนะครับ :)")
+                await reply_to_line(reply_token, "ขออภัยในความไม่สะดวก ระบบกำลังอยู่ระหว่างการพัฒนา อดใจรอซักนิดนะครับ 😉")
                 
             if "ลบข้อมูล" in text:
-                await reply_to_line(reply_token, "ขออภัยในความไม่สะดวก ระบบกำลังอยู่ระหว่างการพัฒนา อดใจรอซักนิดนะครับ :)")
+                await reply_to_line(reply_token, "ขออภัยในความไม่สะดวก ระบบกำลังอยู่ระหว่างการพัฒนา อดใจรอซักนิดนะครับ 😉")
                 
             # 👉 ถ้าผู้ใช้พิมพ์ "ดึงข้อมูลลูกค้า"
             if "ดึงข้อมูลลูกค้า" in text:
@@ -120,10 +127,12 @@ async def webhook(req: Request):
                 match = re.search(r'\{.*\}', result.content, re.DOTALL)
                 data = json.loads(match.group())
 
-                required_fields = ['name', 'phone', 'email']
-                invalid_values = ["", "-", "ไม่ระบุ", "ไม่ทราบ", None]
-                if not all(field in data and str(data[field]).strip() not in invalid_values for field in required_fields):
-                    response_text = "❌ กรุณากรอกข้อมูลให้ครบถ้วน ชื่อ-สกุล เบอร์โทร E-mail ตัวอย่าง มานะ ใจดี 0899999999 mana_jaidee@dynastyceramic.com"
+                name = str(data.get("name", "")).strip()
+                phone = str(data.get("phone", "")).strip()
+                email = str(data.get("email", "")).strip()
+                
+                if not (is_valid_name(name) and is_valid_phone(phone) and is_valid_email(email)):
+                    response_text = "❌ กรุณากรอกข้อมูลให้ครบถ้วน ชื่อ-สกุล เบอร์โทร E-mail ตัวอย่าง มานะ ใจดี 0899999999 mana_jaidee@dynastyceramic.com 😊"
                 else:
                     # บันทึกลง MongoDB
                     insert_result = collection.insert_one(data)
