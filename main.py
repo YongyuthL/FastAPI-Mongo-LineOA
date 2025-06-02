@@ -121,7 +121,8 @@ async def webhook(req: Request):
                 data = json.loads(match.group())
 
                 required_fields = ['name', 'phone', 'email']
-                if not all(field in data and data[field] for field in required_fields):
+                invalid_values = ["", "-", "ไม่ระบุ", "ไม่ทราบ", None]
+                if not all(field in data and str(data[field]).strip() not in invalid_values for field in required_fields):
                     response_text = "❌ กรุณากรอกข้อมูลให้ครบถ้วน ชื่อ-สกุล เบอร์โทร E-mail ตัวอย่าง มานะ ใจดี 0899999999 mana_jaidee@dynastyceramic.com"
                 else:
                     # บันทึกลง MongoDB
