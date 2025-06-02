@@ -6,4 +6,3 @@ pymongo
 langchain-community
 uuid
 pandas
-re
