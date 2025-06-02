@@ -36,7 +36,7 @@ app = FastAPI()
 # สร้าง LLM chain
 def get_llm_chain():
     prompt = PromptTemplate.from_template(
-        "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email โดยไม่ต้องอธิบายหรือใส่ข้อความอื่นนอกจาก JSON"
+        "แปลงข้อความ: {text} ให้เป็น JSON ที่มี name, phone, email โดย name ต้องเป็นชื่อ-นามสกุลที่รวมกัน เช่น 'มีนะ ขยันมาก' ห้ามแยกชื่อกับนามสกุล และอย่าอธิบายเพิ่มเติม"
     )
     llm = ChatOpenAI(
         temperature=0,
