@@ -6,3 +6,4 @@ pymongo
 langchain-community
 uuid
 pandas
+openpyxl
