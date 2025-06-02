@@ -9,3 +9,5 @@ services:
         value: fromRender
       - key: MONGODB_URI
         value: fromRender
+      - key: LINE_CHANNEL_ACCESS_TOKEN
+        value: fromRender
