@@ -1,3 +1,4 @@
+from fastapi.responses import FileResponse
 from fastapi import FastAPI, Request
 import httpx
 from langchain.chat_models import ChatOpenAI
@@ -60,6 +61,18 @@ async def reply_to_line(reply_token: str, message: str):
 
 
 
+@app.get("/download/{filename}")
+async def download_excel(filename: str):
+    filepath = f"/tmp/{filename}"
+    if not os.path.exists(filepath):
+        return {"message": "❌ ไฟล์ไม่พบหรือหมดอายุ"}
+    
+    return FileResponse(
+        path=filepath,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        filename="customers.xlsx"
+    )
+    
 # Webhook endpoint
 @app.post("/webhook")
 async def webhook(req: Request):
