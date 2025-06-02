@@ -83,7 +83,7 @@ async def webhook(req: Request):
                     df.to_excel(filepath, index=False)
 
                     # URL บน Render ที่เปิดให้โหลด
-                    download_url = f"https://your-app-name.onrender.com/download/{filename}"
+                    download_url = f"https://fastapi-mongo-lineoa.onrender.com/download/{filename}"
 
                     await reply_to_line(reply_token, f"📥 ดาวน์โหลดข้อมูลลูกค้าได้ที่นี่:\n{download_url}")
                     
