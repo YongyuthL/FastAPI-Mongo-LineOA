@@ -7,6 +7,8 @@ import os
 import json
 from dotenv import load_dotenv
 import re
+import pandas as pd
+import uuid
 load_dotenv()
 
 # ENV variables
@@ -68,6 +70,25 @@ async def webhook(req: Request):
         if event["type"] == "message" and event["message"]["type"] == "text":
             text = event["message"]["text"]
             reply_token = event["replyToken"]
+
+            # 👉 ถ้าผู้ใช้พิมพ์ "ดึงข้อมูลลูกค้า"
+            if "ดึงข้อมูลลูกค้า" in text:
+                customers = list(collection.find({}, {"_id": 0}))
+                if not customers:
+                    await reply_to_line(reply_token, "❌ ยังไม่มีข้อมูลลูกค้าในระบบครับ")
+                else:
+                    df = pd.DataFrame(customers)
+                    filename = f"customers_{uuid.uuid4().hex}.xlsx"
+                    filepath = f"/tmp/{filename}"
+                    df.to_excel(filepath, index=False)
+
+                    # URL บน Render ที่เปิดให้โหลด
+                    download_url = f"https://your-app-name.onrender.com/download/{filename}"
+
+                    await reply_to_line(reply_token, f"📥 ดาวน์โหลดข้อมูลลูกค้าได้ที่นี่:\n{download_url}")
+                    
+                continue  # ข้ามไม่ให้ประมวลผล LangChain
+
 
             # สร้าง Chain และเรียกใช้
             chain = get_llm_chain()
